@@ -16,23 +16,35 @@ else:
     from subprocess import getstatusoutput
 
 
-def unmomounted_partitions():
+def unmounted_partitions():
     lsblk = subprocess.run(['lsblk'], stdout=subprocess.PIPE)
-    partitions = filter(lambda drive: not drive.startswith('loop'),
-                    lsblk.stdout.decode('utf-8').splitlines()[1:])
-    partitions = filter(lambda drive: drive.split()[5] == 'part' and
-                                      len(drive.split()) <= 6, partitions)
+
+    partitions = filter(
+        lambda drive: not drive.startswith('loop'),
+        lsblk.stdout.decode('utf-8').splitlines()[1:]
+    )
+    partitions = filter(
+        lambda drive: drive.split()[5] == 'part' and len(drive.split()) <= 6,
+        partitions
+    )
 
     unmounted = []
     pattern = re.compile(r'[\W_]+')
+
     for partition in partitions:
         partition = partition.split()
-        unmounted.append("{} - {}".format(pattern.sub('', partition[0]), partition[3]))
+        unmounted.append(
+            "{} - {}".format(pattern.sub('', partition[0]), partition[3])
+        )
 
     return unmounted
 
 
 def prompt(partitions):
+    if len(partitions) == 0:
+        print('\nNo unmounted partitions\n')
+        exit(0)
+
     partition = inquirer.prompt([
         inquirer.List(
             'partition',
@@ -54,27 +66,26 @@ def mount(partition):
 
     already_mounted, _ = getstatusoutput('mountpoint {}'.format(mount_point))
 
-    if already_mounted:
-        success, message = getstatusoutput('sudo mount -o ro /dev/{} {}'
-                                           .format(partition, mount_point))
-    else:
+    if already_mounted == 0:
         mount_point = '/media/{}'.format(uuid.uuid4().hex)
         subprocess.run(['sudo', 'mkdir', mount_point], stderr=subprocess.PIPE)
-        success, message = getstatusoutput('sudo mount -o ro /dev/{} {}'
-                                           .format(partition, mount_point))
+
+    success, message = getstatusoutput(
+        'sudo mount -o ro /dev/{} {}'.format(partition, mount_point)
+    )
 
     if success == 0:
-        print()
         print('Successfully mounted /dev/{} to {}\n'.format(partition, mount_point))
     else:
-        print()
-        print('Something went wrong!')
-        print(message)
-        print()
+        print('Something went wrong:')
+        print(message, end='\n\n')
 
 
 def main():
-    mount(prompt(unmomounted_partitions()))
+    try:
+        mount(prompt(unmounted_partitions()))
+    except KeyboardInterrupt:
+        print('\nCancelled by user\n')
 
 
 if __name__ == '__main__':

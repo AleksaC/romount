@@ -1,17 +1,17 @@
-# romount [![license](https://img.shields.io/github/license/AleksaC/nnlib.svg?maxAge=2592000)](https://github.com/AleksaC/romount/blob/master/LICENSE)
+# romount
 
 CLI tool for mounting partitions in read-only mode.
 
 ## About
 
-If you're using a Linux/Windows dual boot odds are you wanted to use some files 
+If you're running a Linux/Windows dual boot odds are you wanted to use some files 
 from Windows partition while working on Linux but encountered an error whereby 
 you can only access the partition if it has been mounted in read only mode. 
 If you're like me you had to google how to do that every time. That's why I 
-decided to create a simple CLI tool that lists unmounted partition and allows you
+decided to create a simple CLI tool that lists unmounted partitions and allows you
 to select the one you want to mount.
 
-## Screenshot
+## Preview
 
 ![screenshot](preview.png)
 
@@ -20,12 +20,15 @@ to select the one you want to mount.
 ```shell script
 git clone https://github.com/AleksaC/romount
 cd romount
-python -m install .
+python -m pip install .
 ```
 
 This most likely adds the romount script to ~/.local/bin. To be able to use it 
 you need to add this location to the PATH by adding `export PATH=~/.local/bin:$PATH`
 to `~/.profile`. You need to log out for this to take effect. 
+
+## License
+[![license](https://img.shields.io/github/license/AleksaC/romount.svg?maxAge=2592000)](https://github.com/AleksaC/romount/blob/master/LICENSE)
 
 ## Contact 🙋‍♂️
 If you have any type of inquiry or there's something you want to tell me 
