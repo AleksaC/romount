@@ -1,5 +1,3 @@
-#!interpreter here
-
 from __future__ import print_function
 
 import re
@@ -43,7 +41,7 @@ def unmounted_partitions():
 def prompt(partitions):
     if len(partitions) == 0:
         print('\nNo unmounted partitions\n')
-        exit(0)
+        sys.exit(0)
 
     partition = inquirer.prompt([
         inquirer.List(
@@ -55,7 +53,7 @@ def prompt(partitions):
     ])
 
     if partition is None:
-        exit(1)
+        sys.exit(1)
 
     return partition['partition'].split()[0]
 
@@ -86,6 +84,7 @@ def main():
         mount(prompt(unmounted_partitions()))
     except KeyboardInterrupt:
         print('\nCancelled by user\n')
+        sys.exit(1)
 
 
 if __name__ == '__main__':

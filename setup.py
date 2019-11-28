@@ -1,5 +1,3 @@
-import sys
-
 from setuptools import setup
 
 from romount import __version__
@@ -10,12 +8,6 @@ with open('requirements.txt', 'r') as f:
 
 with open('README.md', 'r') as f:
     readme = f.read()
-
-with open('romount/romount.py', 'r+') as f:
-    script = f.read().replace('interpreter here', sys.executable)
-    f.seek(0)
-    f.write(script)
-    f.truncate()
 
 setup(
     name='romount',
